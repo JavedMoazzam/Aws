@@ -1,27 +1,39 @@
-# MyApp
+# Streamlit Blog App
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.7.
+A secure Streamlit webapp for writing blogs with an admin panel to upload and maintain posts.
 
-## Development server
+## Features
+- Admin authentication with PBKDF2 password hashing
+- SQLite-backed CRUD for posts
+- Image uploads saved to `data/uploads`
+- Public blog with list and detail views by slug
+- Environment/secrets driven configuration via `.streamlit/secrets.toml`
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Quick start
+```
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+./scripts/dev_run.sh
+```
+Then open http://localhost:8501
 
-## Code scaffolding
+## Admin login
+Defaults come from `.streamlit/secrets.toml`:
+- username: `admin`
+- password: `change-me`
+Change these before exposing publicly.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Security notes
+- Replace `admin_password` and `session_cookie_key` in `.streamlit/secrets.toml`.
+- Use a strong random password: `openssl rand -base64 32`.
+- SQLite is file-based; ensure the `data/` directory is not exposed by your reverse proxy.
+- Streamlit is best behind authentication when deployed on the public internet.
 
-## Build
+## Data
+- Database: `data/blog.db`
+- Uploads: `data/uploads`
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+## Pages
+- `streamlit_app.py` is the entrypoint
+- Multipage wrappers in `pages/1_Blog.py` and `pages/2_Admin.py`
